@@ -29,7 +29,7 @@ const Grid: FC<IGrid> = ({
     const item = e.target as HTMLElement;
     
     if (item.dataset.pos === undefined || item.dataset.val === undefined) {
-        console.log('Is this possible?')
+        console.log('Is this possible?', item.dataset.pos, item.dataset.val)
         return
     }
 
@@ -156,7 +156,7 @@ const [crochetPattern, setPattern] = useState<string[]>([]);
             return (
             <tr className={styles.row} key={index}>
                 {rows.map((columns, cIndex) => {
-                    return <td key={cIndex} data-pos={[index, cIndex]} data-val={columns} className={styles.square} onClick={handleClick} style={{backgroundColor: columns === 1 ? secondaryColour : mainColour}} />
+                    return <td key={cIndex} data-pos={[index, cIndex]} data-val={columns || 0} className={styles.square} onClick={handleClick} style={{backgroundColor: columns === 1 ? secondaryColour : mainColour}} />
                 })}
             </tr>
         )
@@ -195,23 +195,26 @@ const [crochetPattern, setPattern] = useState<string[]>([]);
         >
           Update Grid
         </Button>
-        <Button
-          type='button'
-          onClick={openPatternSet}>
-            Set pattern from csv
-        </Button>
-        {showSetPattern && (
-          <div className={styles.setPattern}>
-            <label htmlFor="csvInput">Paste csv pattern here</label>
-            <textarea id="csvInput" name="csvInput" rows={15} cols={40} value={csvPattern} onChange={handleTextareaChange}/>
-            <Button
-              type='button'
-              onClick={updateGridFromText}>
-                Update pattern
-            </Button>
-          </div>
+        </div>
+        <div className={styles.csvPattern}>
+          <Button
+            type='button'
+            onClick={openPatternSet}>
+              Set pattern from csv
+          </Button>
+          {showSetPattern && (
+            <div className={styles.setPattern}>
+              <label htmlFor="csvInput">Paste csv pattern here</label>
+              <textarea id="csvInput" name="csvInput" rows={12} cols={26} value={csvPattern} onChange={handleTextareaChange}/>
+              <Button
+                type='button'
+                onClick={updateGridFromText}>
+                  Update pattern
+              </Button>
+            </div>
 
-        )}
+          )}
+        </div>
 
       <Button
           type='button'
@@ -219,7 +222,7 @@ const [crochetPattern, setPattern] = useState<string[]>([]);
       >
           Create Pattern
       </Button>
-    </div>
+    
     <div>
         <ol type="1">
             {crochetPattern.map((instruction, index) => {

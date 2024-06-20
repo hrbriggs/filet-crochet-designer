@@ -113,6 +113,16 @@
     margin: 5px;
   }
 
+  .csvPattern {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
   .setPattern {
     width: 200px;
   }
