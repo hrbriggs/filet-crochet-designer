@@ -1,4 +1,5 @@
-import { FC, ReactElement, MouseEvent, useState } from 'react'
+import { FC, ReactElement, MouseEvent, ChangeEvent, useState } from 'react'
+import Papa from 'papaparse';
 
 import styles from './grid.module.scss'
 // import useTranslations from 'i18n/useTranslations'
@@ -117,6 +118,36 @@ const [crochetPattern, setPattern] = useState<string[]>([]);
         setPattern(pattern)
     }
 
+    const [showSetPattern, setSetPattern] = useState(false);
+    const openPatternSet  = () => {
+      setSetPattern(!showSetPattern);
+    }
+
+    const [csvPattern, setPatternFromText] = useState('');
+
+    const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+      setPatternFromText(e.target.value);
+    };
+
+    const updateGridFromText  = () => {
+      Papa.parse<[]>(csvPattern, {
+        complete: (result) => {
+          // Currently relies on "selected" squares (values in csv) being 1
+          // TODO convert all values to 1
+          if (result.data.length > 0) {
+            const data: [][] = result.data
+            setCells(data[0].length)
+            setRows(data.length)
+            setGrid(data)
+          }
+        },
+        header: false,
+        skipEmptyLines: true,
+        dynamicTyping: true,
+      });
+
+    }
+
   return (
     <div>
       <table>
@@ -164,6 +195,24 @@ const [crochetPattern, setPattern] = useState<string[]>([]);
         >
           Update Grid
         </Button>
+        <Button
+          type='button'
+          onClick={openPatternSet}>
+            Set pattern from csv
+        </Button>
+        {showSetPattern && (
+          <div className={styles.setPattern}>
+            <label htmlFor="csvInput">Paste csv pattern here</label>
+            <textarea id="csvInput" name="csvInput" rows={15} cols={40} value={csvPattern} onChange={handleTextareaChange}/>
+            <Button
+              type='button'
+              onClick={updateGridFromText}>
+                Update pattern
+            </Button>
+          </div>
+
+        )}
+
       <Button
           type='button'
           onClick={createPattern}
